@@ -37,6 +37,8 @@ namespace UnitTestSinglyLinkedLists
         public void NodeNextCantBeThis()
         {
             SinglyLinkedListNode node = new SinglyLinkedListNode("foo");
+
+            //Expecting an exception, so no Assert is needed.
             node.Next = node;
         }
 
