@@ -7,6 +7,7 @@ namespace SinglyLinkedLists
 {
     public class SinglyLinkedList
     {
+        private SinglyLinkedListNode first_node;
         public SinglyLinkedList()
         {
             // NOTE: This constructor isn't necessary, once you've implemented the constructor below.
@@ -37,23 +38,62 @@ namespace SinglyLinkedLists
 
         public void AddLast(string value)
         {
-            throw new NotImplementedException();
+            if (this.First() == null)
+            {
+                first_node = new SinglyLinkedListNode(value);
+            } else
+            {
+                // find last node
+                // set last_node.Next = new SinglyLinkedListNode(value)
+                SinglyLinkedListNode currentNode = first_node;
+                while (currentNode.Next != null)
+                {
+                    currentNode = currentNode.Next;
+                }
+                currentNode.Next = new SinglyLinkedListNode(value);
+            }
         }
 
         // NOTE: There is more than one way to accomplish this.  One is O(n).  The other is O(1).
         public int Count()
         {
-            throw new NotImplementedException();
+            if (this.First() == null)
+            {
+                return 0;
+            } else
+            {
+                return 0;
+            }
+
+            // Provide a second implementation
         }
 
         public string ElementAt(int index)
         {
-            throw new NotImplementedException();
+            if (this.First() == null)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            if (index == 0)
+            {
+                return this.First(); // placeholder
+            }
+            else
+            {
+                SinglyLinkedListNode thisNode = this.first_node;
+                int nodeIndex = 0;
+                while (nodeIndex < index)
+                {
+                    thisNode = thisNode.Next;
+                    nodeIndex++;
+                }
+                return thisNode.Value;
+            }
         }
 
         public string First()
         {
-            throw new NotImplementedException();
+            return (this.first_node == null) ? null : this.first_node.Value;
         }
 
         public int IndexOf(string value)

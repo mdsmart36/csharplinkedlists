@@ -21,8 +21,10 @@ namespace SinglyLinkedLists
                 if (value.Equals(this))
                 {
                     throw new ArgumentException();
+                } else
+                {
+                    this.next = value;
                 }
-                this.next = value;
             }
         }
 
@@ -44,6 +46,7 @@ namespace SinglyLinkedLists
             return node1.CompareTo(node2) > 0;
         }
 
+        /*
         public static bool operator ==(SinglyLinkedListNode node1, SinglyLinkedListNode node2)
         {
             return node1.CompareTo(node2) == 0;
@@ -53,10 +56,13 @@ namespace SinglyLinkedLists
         {
             return !(node1 == node2);
         }
+        */
 
-        public SinglyLinkedListNode(string value)
+        
+        
+        public SinglyLinkedListNode(string input)
         {
-            this.value = value;
+            this.value = input;
             // Undeclared data members default to null, but ...
             this.next = null;
 
@@ -68,18 +74,7 @@ namespace SinglyLinkedLists
         public int CompareTo(Object obj)
         {
             SinglyLinkedListNode other_node = obj as SinglyLinkedListNode;
-            //if (this.value == other_node.Value)
-            if (Object.ReferenceEquals(this, other_node))
-            {
-                return 0;
-            }
-            return 1;
-            /* come back to this. What are other ways to compare instances?
-            else
-            {
-                throw new NotImplementedException();
-            }
-            */
+            return (other_node == null) ? 1 : this.value.CompareTo(other_node.Value);
         }
 
         public bool IsLast()
@@ -90,6 +85,11 @@ namespace SinglyLinkedLists
         public override string ToString()
         {
             return this.value;
+        }
+
+        public override bool Equals(Object obj)
+        {
+            return this.CompareTo(obj) == 0;
         }
     }
 }
