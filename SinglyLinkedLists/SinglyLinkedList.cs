@@ -57,12 +57,20 @@ namespace SinglyLinkedLists
         // NOTE: There is more than one way to accomplish this.  One is O(n).  The other is O(1).
         public int Count()
         {
+            int count = 0;
             if (this.First() == null)
             {
-                return 0;
+                return count;
             } else
             {
-                return 0;
+                SinglyLinkedListNode thisNode = this.first_node;
+                count = 1;
+                while (thisNode.Next != null)
+                {
+                    thisNode = thisNode.Next;
+                    count++;
+                }
+                return count;
             }
 
             // Provide a second implementation
@@ -91,6 +99,16 @@ namespace SinglyLinkedLists
             }
         }
 
+        private SinglyLinkedListNode LastNode()
+        {
+            SinglyLinkedListNode thisNode = this.first_node;
+            while (thisNode.Next != null)
+            {
+                thisNode = thisNode.Next;
+            }
+            return thisNode;
+        }
+
         public string First()
         {
             return (this.first_node == null) ? null : this.first_node.Value;
@@ -111,7 +129,15 @@ namespace SinglyLinkedLists
         // HINT 3: If you highlight code and right click, you can use the refactor menu to extract a method for you...
         public string Last()
         {
-            throw new NotImplementedException();
+            // if list is empty, return null
+            if (this.first_node == null)
+            {
+                return null;
+            }
+            else
+            {
+                return this.LastNode().Value;
+            }
         }
 
         public void Remove(string value)
@@ -128,5 +154,38 @@ namespace SinglyLinkedLists
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString()
+        {
+            int count = this.Count();
+            string returnString = "", leftBrace = "{", rightBrace = "}";
+            string space = " ", quote = "\"", comma = ",";
+            SinglyLinkedListNode thisNode = this.first_node;
+
+            if (count == 0) // empty list
+            {
+                return leftBrace + space + rightBrace;
+            }
+            // loop through the list and build a string
+
+            if (count == 1)
+            {
+                returnString += leftBrace + space + quote + thisNode.Value + quote + space + rightBrace;
+            }
+            else
+            {
+                returnString = leftBrace + space;
+                while (thisNode.Next != null)
+                {
+                    returnString += quote + thisNode.Value + quote + comma + space;
+                    thisNode = thisNode.Next;
+                }
+                returnString += quote + thisNode.Value + quote;
+                returnString += space + rightBrace;
+            }
+            return returnString;
+        }
+
+
     }
 }
