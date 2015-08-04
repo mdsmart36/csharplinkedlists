@@ -22,24 +22,81 @@ namespace SinglyLinkedLists
         // READ: http://msdn.microsoft.com/en-us/library/aa691335(v=vs.71).aspx
         public SinglyLinkedList(params object[] values)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < values.Count(); i++)
+            {
+                this.AddLast(values[i] as String);
+            }
         }
 
         // READ: http://msdn.microsoft.com/en-us/library/6x16t2tx.aspx
         public string this[int i]
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get { return this.ElementAt(i); }
+            set
+            {
+                // find the ith node and change its Value
+                int index = 0;
+                var thisNode = first_node;
+                while (index++ < i)
+                {
+                    thisNode = thisNode.Next;
+                }
+                thisNode.Value = value;
+            }
         }
 
         public void AddAfter(string existingValue, string value)
         {
-            throw new NotImplementedException();
+            // find the node to add after
+            var thisNode = first_node;
+            bool foundBeforeEndOfList = false;
+
+            while (!(thisNode.IsLast()))
+            {
+                if (thisNode.Value == existingValue)
+                {
+                    foundBeforeEndOfList = true;
+                    break;
+                }
+                else
+                {
+                    thisNode = thisNode.Next;
+                }
+            }
+
+            // found at last node of list
+            if (thisNode.IsLast() && thisNode.Value == existingValue)
+            {
+                this.AddLast(value);
+                return;
+            }
+
+            if (!foundBeforeEndOfList) { throw new ArgumentException(); }
+
+            if (foundBeforeEndOfList)
+            {
+                // create new node and link it into the list
+                var newNode = new SinglyLinkedListNode(value);
+                newNode.Next = thisNode.Next;
+                thisNode.Next = newNode;
+                listLength += 1;
+            }
+
         }
 
         public void AddFirst(string value)
         {
-            throw new NotImplementedException();
+            if (this.First() == null)
+            {
+                first_node = new SinglyLinkedListNode(value);
+            }
+            else
+            {
+                var newFirstNode = new SinglyLinkedListNode(value);
+                newFirstNode.Next = first_node;
+                first_node = newFirstNode;
+            }
+            listLength += 1;
         }
 
         public void AddLast(string value)
@@ -102,7 +159,14 @@ namespace SinglyLinkedLists
 
         public int IndexOf(string value)
         {
-            throw new NotImplementedException();
+            int index = 0;
+            var thisNode = first_node;
+            while (thisNode.Value != value)
+            {
+                thisNode = thisNode.Next;
+                index += 1;
+            }
+            return index;
         }
 
         public bool IsSorted()
