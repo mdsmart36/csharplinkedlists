@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,11 @@ namespace SinglyLinkedLists
     public class SinglyLinkedList
     {
         private SinglyLinkedListNode first_node;
+
+        // increment this variable in each "Add" method
+        // decrement this variable in each "Remove" method
+        private int listLength = 0;
+
         public SinglyLinkedList()
         {
             // NOTE: This constructor isn't necessary, once you've implemented the constructor below.
@@ -41,39 +47,23 @@ namespace SinglyLinkedLists
             if (this.First() == null)
             {
                 first_node = new SinglyLinkedListNode(value);
-            } else
+            }
+            else
             {
-                // find last node
-                // set last_node.Next = new SinglyLinkedListNode(value)
-                SinglyLinkedListNode currentNode = first_node;
-                while (currentNode.Next != null)
+                var currentNode = this.first_node;
+                while (!currentNode.IsLast())
                 {
                     currentNode = currentNode.Next;
                 }
                 currentNode.Next = new SinglyLinkedListNode(value);
             }
+            listLength += 1;
         }
 
         // NOTE: There is more than one way to accomplish this.  One is O(n).  The other is O(1).
         public int Count()
         {
-            int count = 0;
-            if (this.First() == null)
-            {
-                return count;
-            } else
-            {
-                SinglyLinkedListNode thisNode = this.first_node;
-                count = 1;
-                while (thisNode.Next != null)
-                {
-                    thisNode = thisNode.Next;
-                    count++;
-                }
-                return count;
-            }
-
-            // Provide a second implementation
+            return listLength;
         }
 
         public string ElementAt(int index)
@@ -82,13 +72,9 @@ namespace SinglyLinkedLists
             {
                 throw new ArgumentOutOfRangeException();
             }
-            if (index == 0)
-            {
-                return this.First(); // placeholder
-            }
             else
             {
-                SinglyLinkedListNode thisNode = this.first_node;
+                var thisNode = this.first_node;
                 int nodeIndex = 0;
                 while (nodeIndex < index)
                 {
@@ -101,8 +87,8 @@ namespace SinglyLinkedLists
 
         private SinglyLinkedListNode LastNode()
         {
-            SinglyLinkedListNode thisNode = this.first_node;
-            while (thisNode.Next != null)
+            var thisNode = this.first_node;
+            while (!thisNode.IsLast())
             {
                 thisNode = thisNode.Next;
             }
@@ -129,15 +115,7 @@ namespace SinglyLinkedLists
         // HINT 3: If you highlight code and right click, you can use the refactor menu to extract a method for you...
         public string Last()
         {
-            // if list is empty, return null
-            if (this.first_node == null)
-            {
-                return null;
-            }
-            else
-            {
-                return this.LastNode().Value;
-            }
+            return (this.first_node == null) ? null : this.LastNode().Value;
         }
 
         public void Remove(string value)
@@ -152,40 +130,61 @@ namespace SinglyLinkedLists
 
         public string[] ToArray()
         {
-            throw new NotImplementedException();
+            var thisNode = this.first_node;
+            string[] emptyArray = new string[] { };
+            string[] myArray = new string[listLength];
+
+            if (listLength == 0)
+            {
+                return emptyArray;
+            }
+            else
+            {
+                int i = 0;
+                while (i < listLength)
+                {
+                    myArray[i++] = thisNode.Value;
+                    thisNode = thisNode.Next;
+                }
+            }
+
+            return myArray;
         }
 
         public override string ToString()
         {
-            int count = this.Count();
-            string returnString = "", leftBrace = "{", rightBrace = "}";
+
+            string leftBrace = "{", rightBrace = "}";
             string space = " ", quote = "\"", comma = ",";
             SinglyLinkedListNode thisNode = this.first_node;
+            StringBuilder builder = new StringBuilder();
 
-            if (count == 0) // empty list
+            if (listLength == 0)
             {
-                return leftBrace + space + rightBrace;
+                return builder.Append(leftBrace).Append(space).Append(rightBrace).ToString();
             }
-            // loop through the list and build a string
-
-            if (count == 1)
+            
+            if (listLength == 1)
             {
-                returnString += leftBrace + space + quote + thisNode.Value + quote + space + rightBrace;
+                builder.Append(leftBrace).Append(space).Append(quote);
+                builder.Append(thisNode.Value);
+                builder.Append(quote).Append(space).Append(rightBrace);
+                return builder.ToString();
+
             }
             else
             {
-                returnString = leftBrace + space;
-                while (thisNode.Next != null)
+                builder.Append(leftBrace).Append(space);
+                while (!thisNode.IsLast())
                 {
-                    returnString += quote + thisNode.Value + quote + comma + space;
+                    builder.Append(quote).Append(thisNode.Value);
+                    builder.Append(quote).Append(comma).Append(space);
                     thisNode = thisNode.Next;
                 }
-                returnString += quote + thisNode.Value + quote;
-                returnString += space + rightBrace;
+                builder.Append(quote).Append(thisNode.Value).Append(quote);
+                builder.Append(space).Append(rightBrace);
             }
-            return returnString;
+            return builder.ToString();
         }
-
-
     }
 }
