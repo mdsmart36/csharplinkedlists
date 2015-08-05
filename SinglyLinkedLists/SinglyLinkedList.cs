@@ -35,18 +35,18 @@ namespace SinglyLinkedLists
             set
             {
                 // find the ith node and change its Value
-                int index = 0;
                 var thisNode = first_node;
-                while (index++ < i)
-                {
-                    thisNode = thisNode.Next;
-                }
+                for (int x = 0; x < i; x++) { thisNode = thisNode.Next; }
                 thisNode.Value = value;
             }
         }
 
         public void AddAfter(string existingValue, string value)
         {
+            // REFACTOR THIS TO MAKE IT SIMPLER
+            // SEE IndexOf()
+            // --------------------------------
+
             // find the node to add after
             var thisNode = first_node;
             bool foundBeforeEndOfList = false;
@@ -132,12 +132,7 @@ namespace SinglyLinkedLists
             else
             {
                 var thisNode = this.first_node;
-                int nodeIndex = 0;
-                while (nodeIndex < index)
-                {
-                    thisNode = thisNode.Next;
-                    nodeIndex++;
-                }
+                for (int i = 0; i < index; i++) { thisNode = thisNode.Next; }
                 return thisNode.Value;
             }
         }
@@ -145,7 +140,7 @@ namespace SinglyLinkedLists
         private SinglyLinkedListNode LastNode()
         {
             var thisNode = this.first_node;
-            while (!thisNode.IsLast())
+            for (int i = 0; i < listLength; i++)
             {
                 thisNode = thisNode.Next;
             }
@@ -159,12 +154,19 @@ namespace SinglyLinkedLists
 
         public int IndexOf(string value)
         {
-            int index = 0;
             var thisNode = first_node;
-            while (thisNode.Value != value)
+            int index = -1;
+
+            if (this.First() == null) { return index; }
+
+            for (int i = 0; i < this.listLength; i++)
             {
+                if (thisNode.Value == value)
+                {
+                    index = i;
+                    break;
+                }
                 thisNode = thisNode.Next;
-                index += 1;
             }
             return index;
         }
@@ -184,12 +186,65 @@ namespace SinglyLinkedLists
 
         public void Remove(string value)
         {
-            throw new NotImplementedException();
+            var thisNode = this.first_node;
+            var previousNode = this.first_node;
+            int index = 0;
+            bool found = false;
+
+            for (int i = 0; i < listLength; i++)
+            {
+                if (thisNode.Value == value)
+                {
+                    index = i;
+                    found = true;
+                    break;
+                }
+                if (i > 0)
+                {
+                    previousNode = thisNode;
+                }
+                thisNode = thisNode.Next;
+            }
+            if (!found) { return; }
+            if (index == 0)
+            {
+                first_node = first_node.Next;
+                listLength -= 1;
+                return;
+            }
+            previousNode.Next = thisNode.Next;
+            listLength -= 1;
+
         }
 
         public void Sort()
         {
-            throw new NotImplementedException();
+
+            // if list is empty or has one item, return
+            bool emptyOrOneItem = ((this.Count() == 0) || (this.Count() == 1));
+            if (emptyOrOneItem) { return; }
+            
+            bool madeChanges;
+            int itemCount = this.Count();
+            do
+            {
+                madeChanges = false;
+                itemCount--;
+                var prevNode = first_node;
+                var node1 = first_node;
+                var node2 = first_node.Next;
+
+                for (int i = 0; i < itemCount; i++)
+                {
+                    if (node1.CompareTo(node2) > 0)
+                    {
+                        prevNode = node1.Next;
+                        node1.Next = node2.Next;
+                        node2.Next = node1;
+                        madeChanges = true;
+                    }
+                }
+            } while (madeChanges);
         }
 
         public string[] ToArray()
@@ -198,16 +253,13 @@ namespace SinglyLinkedLists
             string[] emptyArray = new string[] { };
             string[] myArray = new string[listLength];
 
-            if (listLength == 0)
-            {
-                return emptyArray;
-            }
+            if (listLength == 0) { return emptyArray; }
+
             else
             {
-                int i = 0;
-                while (i < listLength)
+                for (int i = 0; i < listLength; i++)
                 {
-                    myArray[i++] = thisNode.Value;
+                    myArray[i] = thisNode.Value;
                     thisNode = thisNode.Next;
                 }
             }
@@ -227,7 +279,7 @@ namespace SinglyLinkedLists
             {
                 return builder.Append(leftBrace).Append(space).Append(rightBrace).ToString();
             }
-            
+
             if (listLength == 1)
             {
                 builder.Append(leftBrace).Append(space).Append(quote);

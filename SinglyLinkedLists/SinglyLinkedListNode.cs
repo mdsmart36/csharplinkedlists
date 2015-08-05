@@ -18,13 +18,15 @@ namespace SinglyLinkedLists
             get { return next; }
             set
             {
-                if (value.Equals(this))
-                {
-                    throw new ArgumentException();
-                } else
-                {
-                    this.next = value;
-                }
+                //if (value.Equals(this))
+                //{
+                //    throw new ArgumentException();
+                //} else
+                //{
+                //    this.next = value;
+                //}
+
+                this.next = value;
             }
         }
 
