@@ -21,12 +21,14 @@ namespace SinglyLinkedLists
                 //if (value.Equals(this))
                 //{
                 //    throw new ArgumentException();
-                //} else
-                //{
-                //    this.next = value;
                 //}
+                //this.next = value;
 
-                this.next = value;
+                if (Object.ReferenceEquals(value, this)) // node cannot point to itself
+                {
+                    throw new ArgumentException();
+                }
+                this.next = value; // this will allow for duplicate values
             }
         }
 

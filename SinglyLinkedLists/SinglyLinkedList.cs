@@ -14,6 +14,7 @@ namespace SinglyLinkedLists
         // decrement this variable in each "Remove" method
         private int listLength = 0;
 
+
         public SinglyLinkedList()
         {
             // NOTE: This constructor isn't necessary, once you've implemented the constructor below.
@@ -80,6 +81,7 @@ namespace SinglyLinkedLists
                 newNode.Next = thisNode.Next;
                 thisNode.Next = newNode;
                 listLength += 1;
+
             }
 
         }
@@ -97,6 +99,7 @@ namespace SinglyLinkedLists
                 first_node = newFirstNode;
             }
             listLength += 1;
+
         }
 
         public void AddLast(string value)
@@ -112,9 +115,16 @@ namespace SinglyLinkedLists
                 {
                     currentNode = currentNode.Next;
                 }
+
+                //for (int i = 1; i < listLength; i++)
+                //{
+                //    currentNode = currentNode.Next;
+                //}
                 currentNode.Next = new SinglyLinkedListNode(value);
             }
             listLength += 1;
+
+
         }
 
         // NOTE: There is more than one way to accomplish this.  One is O(n).  The other is O(1).
@@ -125,7 +135,7 @@ namespace SinglyLinkedLists
 
         public string ElementAt(int index)
         {
-            if (this.First() == null)
+            if (this.First() == null || index >= this.listLength)
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -133,6 +143,7 @@ namespace SinglyLinkedLists
             {
                 var thisNode = this.first_node;
                 for (int i = 0; i < index; i++) { thisNode = thisNode.Next; }
+                
                 return thisNode.Value;
             }
         }
@@ -140,7 +151,7 @@ namespace SinglyLinkedLists
         private SinglyLinkedListNode LastNode()
         {
             var thisNode = this.first_node;
-            for (int i = 0; i < listLength; i++)
+            for (int i = 1; i < this.listLength; i++)
             {
                 thisNode = thisNode.Next;
             }
@@ -173,7 +184,18 @@ namespace SinglyLinkedLists
 
         public bool IsSorted()
         {
-            throw new NotImplementedException();
+            var is_sorted = true;
+            var thisNode = this.first_node;
+            for (int i = 0; i < listLength-1; i++)
+            {
+                if (thisNode.CompareTo(thisNode.Next) > 0)
+                {
+                    is_sorted = false;
+                    break;
+                }
+                thisNode = thisNode.Next;
+            }
+            return is_sorted;
         }
 
         // HINT 1: You can extract this functionality (finding the last item in the list) from a method you've already written!
@@ -217,34 +239,25 @@ namespace SinglyLinkedLists
 
         }
 
+        // Implementation of Bubblesort
         public void Sort()
         {
-
-            // if list is empty or has one item, return
-            bool emptyOrOneItem = ((this.Count() == 0) || (this.Count() == 1));
-            if (emptyOrOneItem) { return; }
-            
-            bool madeChanges;
-            int itemCount = this.Count();
-            do
+            while (!this.IsSorted())
             {
-                madeChanges = false;
-                itemCount--;
-                var prevNode = first_node;
-                var node1 = first_node;
-                var node2 = first_node.Next;
-
-                for (int i = 0; i < itemCount; i++)
+                var node1 = this.first_node;
+                var node2 = node1.Next;
+                for (int i = 1; i < this.listLength; i++)
                 {
                     if (node1.CompareTo(node2) > 0)
                     {
-                        prevNode = node1.Next;
-                        node1.Next = node2.Next;
-                        node2.Next = node1;
-                        madeChanges = true;
+                        var temp = node2.Value;
+                        node2.Value = node1.Value;
+                        node1.Value = temp;
                     }
+                    node1 = node1.Next;
+                    node2 = node2.Next;
                 }
-            } while (madeChanges);
+            }
         }
 
         public string[] ToArray()
@@ -269,24 +282,22 @@ namespace SinglyLinkedLists
 
         public override string ToString()
         {
-
+            // REFACTOR FOR SATURDAY
             string leftBrace = "{", rightBrace = "}";
             string space = " ", quote = "\"", comma = ",";
-            SinglyLinkedListNode thisNode = this.first_node;
+            var thisNode = this.first_node;
             StringBuilder builder = new StringBuilder();
 
             if (listLength == 0)
             {
                 return builder.Append(leftBrace).Append(space).Append(rightBrace).ToString();
             }
-
             if (listLength == 1)
             {
                 builder.Append(leftBrace).Append(space).Append(quote);
                 builder.Append(thisNode.Value);
                 builder.Append(quote).Append(space).Append(rightBrace);
                 return builder.ToString();
-
             }
             else
             {
