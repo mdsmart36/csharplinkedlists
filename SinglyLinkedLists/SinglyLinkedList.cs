@@ -14,13 +14,13 @@ namespace SinglyLinkedLists
         // decrement this variable in each "Remove" method
         private int listLength = 0;
 
-
-        public SinglyLinkedList()
-        {
-            // NOTE: This constructor isn't necessary, once you've implemented the constructor below.
-        }
+        //public SinglyLinkedList()
+        //{
+        //    // NOTE: This constructor isn't necessary, once you've implemented the constructor below.
+        //}
 
         // READ: http://msdn.microsoft.com/en-us/library/aa691335(v=vs.71).aspx
+        // List constructor with a variable number of parameters
         public SinglyLinkedList(params object[] values)
         {
             for (int i = 0; i < values.Count(); i++)
@@ -30,6 +30,7 @@ namespace SinglyLinkedLists
         }
 
         // READ: http://msdn.microsoft.com/en-us/library/6x16t2tx.aspx
+        // Element accessor method; making linked list act like an array when accessing data
         public string this[int i]
         {
             get { return this.ElementAt(i); }
@@ -44,45 +45,30 @@ namespace SinglyLinkedLists
 
         public void AddAfter(string existingValue, string value)
         {
-            // REFACTOR THIS TO MAKE IT SIMPLER
-            // SEE IndexOf()
-            // --------------------------------
-
-            // find the node to add after
             var thisNode = first_node;
-            bool foundBeforeEndOfList = false;
+            bool found = false;
 
-            while (!(thisNode.IsLast()))
+            for (int i = 0; i < listLength; i++)
             {
                 if (thisNode.Value == existingValue)
                 {
-                    foundBeforeEndOfList = true;
+                    found = true;
                     break;
                 }
-                else
-                {
-                    thisNode = thisNode.Next;
-                }
+                thisNode = thisNode.Next;
             }
 
-            // found at last node of list
-            if (thisNode.IsLast() && thisNode.Value == existingValue)
+            if (!found) { throw new ArgumentException(); }
+            if (thisNode.IsLast())
             {
                 this.AddLast(value);
                 return;
             }
-
-            if (!foundBeforeEndOfList) { throw new ArgumentException(); }
-
-            if (foundBeforeEndOfList)
-            {
-                // create new node and link it into the list
-                var newNode = new SinglyLinkedListNode(value);
-                newNode.Next = thisNode.Next;
-                thisNode.Next = newNode;
-                listLength += 1;
-
-            }
+            // create new node and link it into the list
+            var newNode = new SinglyLinkedListNode(value);
+            newNode.Next = thisNode.Next;
+            thisNode.Next = newNode;
+            listLength += 1;
 
         }
 
@@ -115,19 +101,14 @@ namespace SinglyLinkedLists
                 {
                     currentNode = currentNode.Next;
                 }
-
-                //for (int i = 1; i < listLength; i++)
-                //{
-                //    currentNode = currentNode.Next;
-                //}
                 currentNode.Next = new SinglyLinkedListNode(value);
             }
             listLength += 1;
-
-
         }
 
         // NOTE: There is more than one way to accomplish this.  One is O(n).  The other is O(1).
+        // This method implementation relies on a private member variable, listLength, being
+        // updated manually at each node add or remove.
         public int Count()
         {
             return listLength;
@@ -170,7 +151,7 @@ namespace SinglyLinkedLists
 
             if (this.First() == null) { return index; }
 
-            for (int i = 0; i < this.listLength; i++)
+            for (int i = 0; i < listLength; i++)
             {
                 if (thisNode.Value == value)
                 {
@@ -184,7 +165,7 @@ namespace SinglyLinkedLists
 
         public bool IsSorted()
         {
-            var is_sorted = true;
+            bool is_sorted = true;
             var thisNode = this.first_node;
             for (int i = 0; i < listLength-1; i++)
             {
@@ -239,9 +220,10 @@ namespace SinglyLinkedLists
 
         }
 
-        // Implementation of Bubblesort
+
         public void Sort()
         {
+            //Implementation of Bubblesort
             while (!this.IsSorted())
             {
                 var node1 = this.first_node;
@@ -259,6 +241,81 @@ namespace SinglyLinkedLists
                 }
             }
         }
+
+        public void InsertionSort()
+        {
+            // convert linked list to array
+            var arrayToSort = new string[this.listLength];
+            arrayToSort = this.ToArray();
+
+            // sort the array
+            for (int i = 1; i < this.listLength; i++)
+            {
+                var value = arrayToSort[i];
+                var j = i-1;
+                while (j >= 0 && (arrayToSort[j].CompareTo(value) > 0))
+                {
+                    arrayToSort[j + 1] = arrayToSort[j];
+                    j -= 1;
+                }
+                arrayToSort[j + 1] = value;
+            }
+
+            // convert array back to linked list
+            SinglyLinkedList newList = new SinglyLinkedList();
+            for (int i = 0; i < this.listLength; i++)
+            {
+                newList.AddLast(arrayToSort[i]);
+            }
+            this.first_node = newList.first_node;
+        }
+
+
+
+        public static string[] Quicksort(string[] arrayToSort)
+        {
+            if (arrayToSort.Length > 1)
+            {
+                var limit = arrayToSort.Length;
+                var less = new ArrayList();
+                var equal = new ArrayList();
+                var greater = new ArrayList();
+                var arrayToReturn = new string[arrayToSort.Length];
+                var pivot = arrayToSort[0];
+
+                foreach (var item in arrayToSort)
+                {
+                    if (item.CompareTo(pivot) < 0) { less.Add(item); }
+                    if (item.CompareTo(pivot) == 0) { equal.Add(item); }
+                    if (item.CompareTo(pivot) > 0) { greater.Add(item); }
+                }
+
+                if (less.Count > 1) { Quicksort(less.ToArray() as string[]); }
+                if (greater.Count > 1) { Quicksort(greater.ToArray() as string[]); }
+                
+                // concatenate less, equal, greater
+                arrayToReturn = less.ToArray().Concat(equal.ToArray()).Concat(greater.ToArray()) as string[];
+                return arrayToReturn;
+            } else
+            {
+                return arrayToSort;
+            }
+            
+        }
+
+        //        function quicksort(array)
+        //less, equal, greater:= three empty arrays
+        //if length(array) > 1
+        //    pivot:= select any element of array
+        //    for each x in array
+        //        if x < pivot then add x to less
+        //        if x = pivot then add x to equal
+        //        if x > pivot then add x to greater
+        //    quicksort(less)
+        //    quicksort(greater)
+        //    array:= concatenate(less, equal, greater)
+
+        //}
 
         public string[] ToArray()
         {

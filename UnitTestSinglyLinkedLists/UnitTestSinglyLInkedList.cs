@@ -429,6 +429,7 @@ namespace UnitTestSinglyLinkedLists
         {
             SinglyLinkedList list = new SinglyLinkedList();
             list.Sort();
+            //list.Quicksort();
             var expected = new string[] { };
             CollectionAssert.AreEqual(expected, list.ToArray());
         }
@@ -437,7 +438,7 @@ namespace UnitTestSinglyLinkedLists
         public void SortSingleItemList()
         {
             SinglyLinkedList list = new SinglyLinkedList("foo");
-            list.Sort();
+            //list.Sort();
             var expected = new string[] { "foo" };
             CollectionAssert.AreEqual(expected, list.ToArray());
         }
@@ -447,6 +448,7 @@ namespace UnitTestSinglyLinkedLists
         {
             SinglyLinkedList list = new SinglyLinkedList("foo", "bar");
             list.Sort();
+            //list.Quicksort();
             var expected = new string[] { "bar", "foo" };
             CollectionAssert.AreEqual(expected, list.ToArray());
         }
@@ -464,8 +466,11 @@ namespace UnitTestSinglyLinkedLists
         public void SortLongerList()
         {
             SinglyLinkedList list = new SinglyLinkedList("foo", "bar", "grille", "zoo", "cat");
-            list.Sort();
+            //list.Sort();
+            list.InsertionSort();
+
             var expected = new string[] { "bar", "cat", "foo", "grille", "zoo" };
+            //CollectionAssert.AreEqual(expected, SinglyLinkedList.Quicksort(list.ToArray()));
             CollectionAssert.AreEqual(expected, list.ToArray());
         }
 

@@ -18,12 +18,6 @@ namespace SinglyLinkedLists
             get { return next; }
             set
             {
-                //if (value.Equals(this))
-                //{
-                //    throw new ArgumentException();
-                //}
-                //this.next = value;
-
                 if (Object.ReferenceEquals(value, this)) // node cannot point to itself
                 {
                     throw new ArgumentException();
@@ -50,20 +44,6 @@ namespace SinglyLinkedLists
             // This implementation is provided for your convenience.
             return node1.CompareTo(node2) > 0;
         }
-
-        /*
-        public static bool operator ==(SinglyLinkedListNode node1, SinglyLinkedListNode node2)
-        {
-            return node1.CompareTo(node2) == 0;
-        }
-
-        public static bool operator !=(SinglyLinkedListNode node1, SinglyLinkedListNode node2)
-        {
-            return !(node1 == node2);
-        }
-        */
-
-        
         
         public SinglyLinkedListNode(string input)
         {
