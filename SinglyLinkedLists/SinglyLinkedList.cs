@@ -106,6 +106,41 @@ namespace SinglyLinkedLists
             listLength += 1;
         }
 
+        public void AddInOrder(string value)
+        {
+            //var newNode = new SinglyLinkedListNode(value);
+            var node1 = this.first_node;
+            var node2 = node1.Next;
+            for (int i = 0; i < this.listLength; i++)
+            {
+                // at beginning of list
+                if ( i == 0 && (value.CompareTo(node1.Value) < 0 || value.CompareTo(node1.Value) == 0))
+                {
+                    this.AddFirst(value);
+                    return;
+                }
+                // at end of list
+                if (i == this.listLength -1 && value.CompareTo(node1.Value) > 0)
+                {
+                    this.AddLast(value);
+                    return;
+                }
+                // middle of the list
+                if (node1.Value.CompareTo(value) < 0 && node2.Value.CompareTo(value) > 0)
+                {
+                    this.AddAfter(node1.Value, value);
+                    return;
+                }
+                if (node1.Value.CompareTo(value) == 0)
+                {
+                    this.AddAfter(node1.Value, value);
+                    return;
+                }
+                node1 = node1.Next;
+                node2 = node2.Next;
+            }
+        }
+
         // NOTE: There is more than one way to accomplish this.  One is O(n).  The other is O(1).
         // This method implementation relies on a private member variable, listLength, being
         // updated manually at each node add or remove.
@@ -155,8 +190,8 @@ namespace SinglyLinkedLists
             {
                 if (thisNode.Value == value)
                 {
-                    index = i;
-                    break;
+                    return i;
+                    
                 }
                 thisNode = thisNode.Next;
             }
@@ -165,18 +200,16 @@ namespace SinglyLinkedLists
 
         public bool IsSorted()
         {
-            bool is_sorted = true;
             var thisNode = this.first_node;
             for (int i = 0; i < listLength-1; i++)
             {
                 if (thisNode.CompareTo(thisNode.Next) > 0)
                 {
-                    is_sorted = false;
-                    break;
+                    return false;
                 }
                 thisNode = thisNode.Next;
             }
-            return is_sorted;
+            return true;
         }
 
         // HINT 1: You can extract this functionality (finding the last item in the list) from a method you've already written!
@@ -185,6 +218,32 @@ namespace SinglyLinkedLists
         public string Last()
         {
             return (this.first_node == null) ? null : this.LastNode().Value;
+        }
+
+        public void RemoveNode(int num)
+        {
+            var thisNode = this.first_node;
+            var previousNode = this.first_node;
+            
+            for (int i = 0; i < num; i++)
+            {
+                
+                if (i > 0)
+                {
+                    previousNode = thisNode;
+                }
+                thisNode = thisNode.Next;
+            }
+
+            if (num == 0)
+            {
+                first_node = first_node.Next;
+                listLength -= 1;
+                return;
+            }
+            previousNode.Next = thisNode.Next;
+            listLength -= 1;
+
         }
 
         public void Remove(string value)
@@ -220,10 +279,9 @@ namespace SinglyLinkedLists
 
         }
 
-
+        //Implementation of Bubblesort
         public void Sort()
         {
-            //Implementation of Bubblesort
             while (!this.IsSorted())
             {
                 var node1 = this.first_node;
@@ -244,32 +302,59 @@ namespace SinglyLinkedLists
 
         public void InsertionSort()
         {
-            // convert linked list to array
-            var arrayToSort = new string[this.listLength];
-            arrayToSort = this.ToArray();
-
-            // sort the array
-            for (int i = 1; i < this.listLength; i++)
+            while (!this.IsSorted())
             {
-                var value = arrayToSort[i];
-                var j = i-1;
-                while (j >= 0 && (arrayToSort[j].CompareTo(value) > 0))
+                var limit = this.listLength;
+                for (int i = 1; i < limit; i++)
                 {
-                    arrayToSort[j + 1] = arrayToSort[j];
-                    j -= 1;
+                    // remove node at index i
+                    var nodeValue = this.ElementAt(i);
+                    this.RemoveNode(i);
+                
+                    // add node in sorted order
+                    this.AddInOrder(nodeValue);
                 }
-                arrayToSort[j + 1] = value;
             }
-
-            // convert array back to linked list
-            SinglyLinkedList newList = new SinglyLinkedList();
-            for (int i = 0; i < this.listLength; i++)
-            {
-                newList.AddLast(arrayToSort[i]);
-            }
-            this.first_node = newList.first_node;
         }
 
+        public SinglyLinkedListNode NodeAt(int index)
+        {
+            var thisNode = this.first_node;
+            for (int i = 0; i < index; i++)
+            {
+                thisNode = thisNode.Next;
+            }
+            return thisNode;
+        }
+
+
+        //public void InsertionSort()
+        //{
+        //    // convert linked list to array
+        //    var arrayToSort = new string[this.listLength];
+        //    arrayToSort = this.ToArray();
+
+        //    // sort the array
+        //    for (int i = 1; i < this.listLength; i++)
+        //    {
+        //        var value = arrayToSort[i];
+        //        var j = i - 1;
+        //        while (j >= 0 && (arrayToSort[j].CompareTo(value) > 0))
+        //        {
+        //            arrayToSort[j + 1] = arrayToSort[j];
+        //            j -= 1;
+        //        }
+        //        arrayToSort[j + 1] = value;
+        //    }
+
+        //    // convert array back to linked list
+        //    SinglyLinkedList newList = new SinglyLinkedList();
+        //    for (int i = 0; i < this.listLength; i++)
+        //    {
+        //        newList.AddLast(arrayToSort[i]);
+        //    }
+        //    this.first_node = newList.first_node;
+        //}
 
 
         public static string[] Quicksort(string[] arrayToSort)
@@ -339,7 +424,6 @@ namespace SinglyLinkedLists
 
         public override string ToString()
         {
-            // REFACTOR FOR SATURDAY
             string leftBrace = "{", rightBrace = "}";
             string space = " ", quote = "\"", comma = ",";
             var thisNode = this.first_node;

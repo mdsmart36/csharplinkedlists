@@ -438,7 +438,7 @@ namespace UnitTestSinglyLinkedLists
         public void SortSingleItemList()
         {
             SinglyLinkedList list = new SinglyLinkedList("foo");
-            //list.Sort();
+            list.Sort();
             var expected = new string[] { "foo" };
             CollectionAssert.AreEqual(expected, list.ToArray());
         }
@@ -457,7 +457,8 @@ namespace UnitTestSinglyLinkedLists
         public void SortSortedList()
         {
             SinglyLinkedList list = new SinglyLinkedList("bar", "cat", "foo", "grille");
-            list.Sort();
+            //list.Sort();
+            list.InsertionSort();
             var expected = new string[] { "bar", "cat", "foo", "grille" };
             CollectionAssert.AreEqual(expected, list.ToArray());
         }
@@ -473,12 +474,29 @@ namespace UnitTestSinglyLinkedLists
             //CollectionAssert.AreEqual(expected, SinglyLinkedList.Quicksort(list.ToArray()));
             CollectionAssert.AreEqual(expected, list.ToArray());
         }
+        
+        [TestMethod]
+        public void TestNodeAt()
+        {
+            SinglyLinkedList list = new SinglyLinkedList("foo", "bar", "grille", "zoo", "cat");
+            Assert.AreEqual(new SinglyLinkedListNode("grille"), list.NodeAt(2));
+        }
+
+        [TestMethod]
+        public void TestRemoveNode()
+        {
+            SinglyLinkedList list = new SinglyLinkedList("foo", "bar", "grille", "zoo", "cat");
+            list.RemoveNode(0);
+            var expected = new string[] { "bar", "grille", "zoo", "cat" };
+            CollectionAssert.AreEqual(expected, list.ToArray());
+        }
 
         [TestMethod]
         public void SortListWithDuplicates()
         {
             SinglyLinkedList list = new SinglyLinkedList("foo", "bar", "grille", "bar");
-            list.Sort();
+            //list.Sort();
+            list.InsertionSort();
             var expected = new string[] { "bar", "bar", "foo", "grille" };
             CollectionAssert.AreEqual(expected, list.ToArray());
         }
